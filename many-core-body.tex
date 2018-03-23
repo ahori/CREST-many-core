@@ -509,11 +509,10 @@ remains optimal as long as no new processes disappear, and that are
 updated upon a successful completion of an agreement (due to the
 semantic of the agreement itself a consensus on the dead processes is
 established during the agreement, allowing for a consistent global
-view of the alive processes). This topology is described in the figure
-above (Figure~\ref{fig:dynamic-topo}). The important change is the
-orange lines, which 
+view of the alive processes). This topology is described in the Figure~\ref{fig:dynamic-topo}. The important change is the
+largest dashed lines, which 
 represent the new connections that are established to cope with the
-discovery of dead processes (signaled by the red dashed line). These
+discovery of dead processes (signaled by the middle dashed line). These
 lines connect a process to the leftmost ancestor still alive, and
 count for one of the most costly, but critical, operation during the
 agreement. Without going in too much details, we have designed a new
@@ -554,7 +553,7 @@ collisions should be as low as possible.
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=0.7\columnwidth]{Figs/Collisions.pdf}
-  \caption{Message Collisions}
+  \caption{Message Collisions on 5P 2D Stencil (X-Y routing)}
   \label{fig:message-collisions}
 \end{center}
 \end{figure}
@@ -568,7 +567,7 @@ simplicity.
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figs/SlidingSubstitution.pdf}
-  \caption{Sliding Methods}
+  \caption{Sliding Methods on 2D Network}
   \label{fig:sliding-methods}
 \end{center}
 \end{figure}
@@ -583,8 +582,8 @@ the same X-akis or Y-axis is chosen and the nodes between the failed
 node and the spare node are shifted. In {\em 2D sliding} method, all
 nodes having the larger or equal to X-axis or Y-axis location are
 shifted. In general, the sliding method can be extended up to {\em
-$N$D sliding}, where $N$ is the dimension of a Cartesian topology
-network. 
+$N$D sliding}, where $N$ is the dimension order of a Cartesian
+topology network. 
 
 The highest order sliding method can be applied only the number of the
 order of the network, assuming spare nodes are allocated on every
@@ -594,7 +593,7 @@ increases one hop count but no collision happens.
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figs/HybridSliding.pdf}
-  \caption{Hybrid Sliding Methods}
+  \caption{Hybrid Sliding Methods on 2D Network}
   \label{fig:hybrid-methods}
 \end{center}
 \end{figure}
@@ -625,7 +624,8 @@ many-core CPU, Knights Landing (KNL). Still, GP-GPUs are not
 standalone and require host CPU, however, most GP-GPUs are black-box
 from the viewpoint of OS and only little things can be done with
 them. Although MPVAS software developed in this project became
-useless, the idea of packing multiple processes into one virtual
+useless, the idea of packing multiple processes running on
+heterogeneous CPUs into one virtual
 address space is still effective.
 
 The PVAS project is still active. One of the most drawback of PVAS was
