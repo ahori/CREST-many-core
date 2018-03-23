@@ -13,7 +13,7 @@ George Bosilca, Aur\'elien Bouteiller and Thomas Herault}
   \email{yuichi.tsujita@riken.jp}
 \and Akio Shimada
      \at Hitachi, Ltd., Research\&Development Group, 292,
-     Yoshida-cho, Totsuka-ku, Yokohama, Kanagawa, JAPAN,
+     Yoshida-cho, Totsuka-ku, Yokohama, Kanagawa, 244-0817, JAPAN,
      \email{akio.shimada.ht@hitachi.com}
 \and Kazumi Yoshinaga
      \at Clotho Co., Ltd., Where ???
@@ -28,8 +28,9 @@ George Bosilca, Aur\'elien Bouteiller and Thomas Herault}
      2-3-223 Takanawa, Minato-ku, Tokyo 108-8619, JAPAN\\
      \email{mikiko.sato@tokai.ac.jp}
 \and Go Fukazawa
-     \at Yamaha ???
-     \email{???}
+     \at Yamaha Corp., 10-1 Nakazawa-cho, Naka-ku, Hamamatsu,
+     430-0904, JAPAN\\
+     \email{go.fukazawa@fzawa.net}
 \and George Bosilca
      \at Innovative Computing Laboratory, University of Tennessee,
      Suite 203 Claxton, 1122 Volunteer Blvd., Knoxville, TN37996, USA,
@@ -305,15 +306,15 @@ higher performance. There is another bottleneck in Two-Phase
 I/O. All-to-all like communication between user processes and
 aggregator processes to sort and merge the users' I/O requests takes
 place. If the I/O requests to the server are throttled, then this
-all-to-all-like communication can also be throttled. And the
-communication bottleneck can also be relaxed. Thus, the flow 
+all-to-all-like communication can also be throttled. Consequently, the
+communication bottleneck can be relaxed. Thus, the flow  
 of the I/O requests from user process to I/O servers can be done in a
 way of step-wise pipeline to level the loads of the communication
 network and I/O servers.
 
 The optimization method is named {\em EARTH} which includes the above
-step-wise communication, the throttling to the I/O servers,
-striping-aware data blocking and distribution. and 
+step-wise communication, throttling to the I/O servers,
+striping-aware data blocking and distribution, and 
 optimized allocation of the aggregator processes to decrease the message
 congestion in communication network. Figure~\ref{fig:earth} shows the
 write bandwidth on the K computer comparing the original MPI-IO and
@@ -324,8 +325,8 @@ increases.
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{Figs/EARTH.pdf}
-  \caption{EARTH Write Performance (the K computer)}
+\includegraphics[width=0.95\columnwidth]{Figs/K-HPIO.pdf}
+  \caption{HP-IO Write Performance (the K computer)}
   \label{fig:earth}
 \end{center}
 \end{figure}
@@ -583,17 +584,16 @@ standalone and require host CPU, however, most GP-GPUs are black-box
 from the viewpoint of OS and only little things can be done with
 them. Although MPVAS software developed in this project became
 useless, the idea of packing multiple processes into one virtual
-address space is still desirable. 
+address space is still effective.
 
-The PVAS project is still active. One of the most drawback of PVAS is
-its implementation by the patched Linux and PVAS is hard to port to the
-other OSes and architectures. To overcome this weakpoint, a new
-user-level implementation has been beng developed, named
+The PVAS project is still active. One of the most drawback of PVAS was
+the implementation by the patched Linux and PVAS was hard to port to the
+other OSes and architectures. To overcome this, a new
+user-level implementation has been being developed, named
 Process-in-Process (PiP). 
-
 The other techniques developed in this project excepting MPVAS are
 applicable for the exa-scale computing. The research on scalable
-MPI-IO, EARTH, is going on. The ULFM development team in UT/ICL is
+MPI-IO, EARTH, is going on. The ULFM development team is
 trying to push ULFM into the MPI standard.
 
 \section{Summary}
