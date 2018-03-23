@@ -12,3 +12,7 @@ $(TARGET).pdf : $(SRC)
 
 clean:
 	rm -f $(TARGET).pdf *.bbl *.blg *.aux *.log *~ 
+
+tarball:
+	make clean
+	cd ..; tar czf many-core.tgz TeX

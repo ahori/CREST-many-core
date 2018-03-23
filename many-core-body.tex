@@ -78,20 +78,21 @@ new because an OS ran on each CPU, unlike the other co-processor
 architectures such as GP-GPU or vector processing unit (e.g.,
 ClearSpeed) where no (explicit) OS ran on those co-processors. 
 
-The performance improvement of applications which have dynamic
-workload is a big concern for the coming post-scale era. Lightweight
-multithread is thought to be the answer for this kind of
-applications. We proposed a novel technique for this topic.
+The performance improvement of applications having dynamic
+workload is a big concern for the coming post-scale era. The
+oversubscribed lightweight multithread is thought to be the answer for
+this kind of applications. We proposed a novel technique for this
+topic. 
 
-I/O has been a headache in the long history of HPC. We focused on the
-collective I/O in MPI and proposed several optimization techniques to
-improve I/O performance.
+I/O performance has been a headache in the long history of HPC. We
+focused on the collective I/O in MPI and proposed several optimization
+techniques to improve I/O performance.
 
 Fault mitigation has been a big concern as supercomputers are scaling
 up. In this project, we proposed two techniques; one is a parallel
 execution environment in which a process failure can be mitigated, and
-another is the technique how user programs can survive from the
-failure by using spare nodes.
+another is the technique how failed nodes must be replaced with spare
+nodes. 
 
 \section{OS Technologies for Heterogeneous Architecture}
 
@@ -242,7 +243,7 @@ computing phase is very different from the other phase.
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[width=0.8\columnwidth]{Figs/MPVAS.pdf}
+\includegraphics[width=0.75\columnwidth]{Figs/MPVAS.pdf}
   \caption{Multiple PVAS}
   \label{fig:mpvas}
 \end{center}
@@ -305,10 +306,11 @@ user-level thread implementation), and ULP over the number of
 processes or threads (X-axis). The context switching times of ULP is
 very close to the ones of MassiveThreads.
 
-If MPI processes in a node were implemented by using ULP and they were
-oversubscribed by having more number of MPI processes than the number
-of CPU cores, then those MPI processes can be switched from one to
-the other in a fast way. 
+If some MPI processes in a node were implemented by using ULP and they
+were oversubscribed by having more number of MPI processes than the
+number of CPU cores, then those MPI processes can be switched from one
+to the other in a fast way. This would result in leveling the load
+imbalance between CPU cores. 
 
 \section{Scalable I/O}
 
@@ -534,17 +536,18 @@ the insurance of safe agreement despite failures in most situations.
 \subsection{Spare Node Substitution}
 
 This subsection considers the questions of how spare nodes should be
-allocated, how to substitute them for faulty nodes, and how much the
-communication performance is affected by such a substitution.
+allocated, how to substitute them with faulty nodes, and how much the
+communication performance is affected by the substitution.
 The third question stems from the modification of the rank mapping by
 node substitutions, which can incur additional message collisions.
 In a stencil computation, rank mapping is done in a
 straightforward way on a Cartesian network without incurring any
-message collisions. However, once a substitution has occurred, the
-node-rank mapping may be
-destroyed. Figure~\ref{fig:message-collisions} shows such an
-example. In this case, the failed node substitution results in having
-at most 5 message collisions (in the dashed circle). When two message
+message collisions. However, once a substitution has occurred, such
+collision-free node-rank mapping can be
+destroyed. Figure~\ref{fig:message-collisions} shows an example of
+message collisions (right figure). In this case, the failed node
+substitution results in having 
+at most 5 message collisions. When two message
 collides, then the latency is doubled. Thus, the number of message
 collisions should be as low as possible.
 
@@ -557,9 +560,8 @@ collisions should be as low as possible.
 \end{figure}
 
 The number of message collisions depends on the spare node allocation
-and how the failed node is substituted. Here, network topology is
-assumed to be Cartesian of any order. Although the substitution idea
-proposed here can be applied to Cartesian having any order, the
+and how the failed node is substituted. Although the substitution idea
+proposed here can be applied to Cartesian networks having any order, the
 explanations are mostly using 2D network topology, due to the
 simplicity. 
 
@@ -579,9 +581,15 @@ node which is located to the nearest Manhattan distance from the
 failed node. In {\em 1D sliding} method, firstly the spare node having
 the same X-akis or Y-axis is chosen and the nodes between the failed
 node and the spare node are shifted. In {\em 2D sliding} method, all
-nodes having the larger X-axis or Y-axis location are shifted. In
-general, the sliding method can be extended up to {\em $N$D sliding},
-where $N$ is the dimension of a Cartesian topology network.
+nodes having the larger or equal to X-axis or Y-axis location are
+shifted. In general, the sliding method can be extended up to {\em
+$N$D sliding}, where $N$ is the dimension of a Cartesian topology
+network. 
+
+The highest order sliding method can be applied only the number of the
+order of the network, assuming spare nodes are allocated on every
+single edge of the network. And this higest order sliding method
+increases one hop count but no collision happens.
 
 \begin{figure}[ht]
 \begin{center}
@@ -594,13 +602,19 @@ where $N$ is the dimension of a Cartesian topology network.
 Those substitution methods can be combined and this is named {\em
 hybrid sliding} method as shown in Figure~\ref{fig:hybrid-methods}. In
 this hybrid sliding method, the method having the highest order must
-be applied. And if the sliding method cannot be applied, then the
-lower order sliding method is applied. Since the 0D sliding method has no
+be applied. This is becuse the higest order sliding method does not
+impacts the network performance so much. 
+And if a sliding method cannot be applied, then the
+lower order sliding method is applied. This procedure is repeated
+until the 1D sliding method fails.
+Since the 0D sliding method has no
 limitation as long as spare nodes exits, it can be used as a last resort.
 
 We developed a simulator of the proposed sliding methods to count the 
-maximum message collisions and evaluated it on the K computer, BG/Q
-and Tsubame2.5\cite{Hori:2015:SSF:2802658.2802670}. 
+maximum message collisions and compares the performance (message
+colliskions) of the proposed sliding methods. We also evaluated the
+sliding methods on the K computer, BG/Q and
+Tsubame2.5\cite{Hori:2015:SSF:2802658.2802670}.  
 
 \section{Subsequent Development}
 
