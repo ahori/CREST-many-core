@@ -9,6 +9,7 @@ $(TARGET).pdf : $(SRC)
 	bibtex $(TARGET)
 	$(TEX) $(TARGET)
 	$(TEX) $(TARGET)
+	$(TEX) $(TARGET)
 
 clean:
 	rm -f $(TARGET).pdf *.bbl *.blg *.aux *.log *~ 

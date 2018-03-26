@@ -4,11 +4,11 @@
 Namiki Mitaro, Go Fukazawa, Mikiko Sato,\\
 George Bosilca, Aur\'elien Bouteiller and Thomas Herault}
 \institute{Atsushi Hori 
-  \at RIKEN, 7-1-26 Minatojima-minamimachi, Chuo-ku, Kobe, Hyogo
+  \at RIKEN, 7-1-26 Minatojima-minamimachi, Chuo-ku, Kobe, Hyogo,
   650-0047, JAPAN\\
   \email{ahori@riken.jp}
 \and Yuichi Tsujita
-  \at RIKEN, 7-1-26 Minatojima-minamimachi, Chuo-ku, Kobe, Hyogo
+  \at RIKEN, 7-1-26 Minatojima-minamimachi, Chuo-ku, Kobe, Hyogo,
   650-0047, JAPAN\\
   \email{yuichi.tsujita@riken.jp}
 \and Akio Shimada
@@ -16,16 +16,18 @@ George Bosilca, Aur\'elien Bouteiller and Thomas Herault}
      Yoshida-cho, Totsuka-ku, Yokohama, Kanagawa, 244-0817, JAPAN,
      \email{akio.shimada.ht@hitachi.com}
 \and Kazumi Yoshinaga
-     \at Clotho Co., Ltd., Where ???
-     \email{kazumi@kuromi-love.com}
+     \at eF-4 Co., Ltd., Saint Hills Ikejiri 4F, 2-16-23 Ohashi,
+     Meguro-ku, Tokyo, 153-0044, JAPAN
+     \email{k.yoshinaga@ef-4.co.jp}
 \and Namiki Mitaro
      \at Tokyo University of Agriculture and Technology, 
-     Naka-cho, Koganei-shi, Tokyo 184-8588, JAPAN,
+     Naka-cho, Koganei-shi, Tokyo, 184-8588, JAPAN,
      \email{namiki@cc.tuat.ac.jp}
 \and Mikiko Sato
      \at Tokai University, School of Information and Telecommunication
-     Engineering, Department of Embedded Technology, 
-     2-3-223 Takanawa, Minato-ku, Tokyo 108-8619, JAPAN\\
+     Engineering\\
+     Department of Embedded Technology, 
+     2-3-223 Takanawa, Minato-ku, Tokyo, 108-8619, JAPAN, 
      \email{mikiko.sato@tokai.ac.jp}
 \and Go Fukazawa
      \at Yamaha Corp., 10-1 Nakazawa-cho, Naka-ku, Hamamatsu,
@@ -33,15 +35,18 @@ George Bosilca, Aur\'elien Bouteiller and Thomas Herault}
      \email{go.fukazawa@fzawa.net}
 \and George Bosilca
      \at Innovative Computing Laboratory, University of Tennessee,
-     Suite 203 Claxton, 1122 Volunteer Blvd., Knoxville, TN37996, USA,
+     Suite 203 Claxton\\
+      1122 Volunteer Blvd., Knoxville, TN37996, USA,
      \email{bosilca@icl.utk.edu}
 \and Aur\'elien Bouteiller
      \at Innovative Computing Laboratory, University of Tennessee,
-     Suite 203 Claxton, 1122 Volunteer Blvd., Knoxville, TN37996, USA,
+     Suite 203 Claxton\\
+      1122 Volunteer Blvd., Knoxville, TN37996, USA,
      \email{bouteill@icl.utk.edu}
 \and Thomas Herault
      \at Innovative Computing Laboratory, University of Tennessee,
-     Suite 203 Claxton, 1122 Volunteer Blvd., Knoxville, TN37996, USA,
+     Suite 203 Claxton\\
+      1122 Volunteer Blvd., Knoxville, TN37996, USA,
      \email{herault@icl.utk.edu}
 }
 
@@ -49,7 +54,24 @@ George Bosilca, Aur\'elien Bouteiller and Thomas Herault}
 \maketitle 
 
 \abstract{
-blablabla
+In this project, the software technologies for the post-peta scale
+computing were explored. More specifically, OS technologies for
+heterogeneous arhitectures, lightweight thread, scalable I/O, and
+fault mitigation were investigated. As for the OS thechnologies, a new
+parallel execution model, {\em Partitioned Virtual Address Space (PVAS)},
+for the many-core CPU was proposed. For the heterogeneous
+acrhitextures where multi-core CPU and many-core CPU are connected
+with an I/O bus, an extension of PVAS, {\em Multiple-PVAS}, to have a
+unified virtual address space of multi-core and many-core CPUs was
+proposed. The proposed PVAS was also enhanced to have multiple
+processes where process context switch can take place at the
+user-level (named {\em User-Level Process: ULP}). As for the scalable I/O,
+EARCTH, optimization techniques for MPI collective I/O, was
+proposed. Lastly, for the fault mitigation, a user-level fault
+mitigation, {\em ULFM} was improved to have faster agreement process,
+and {\em sliding methods} to substitute failed nodes with spare nodes
+was proposed. The funding of this project was ended in 2016, however,
+many sub-projects are still being propelled to go further. 
 }
 
 \section{Overview and Background}
@@ -76,7 +98,8 @@ co-processor and it needed a many-core CPU to be attached with. From
 the view point of OS research, this heterogeneous CPU architecture was
 new because an OS ran on each CPU, unlike the other co-processor
 architectures such as GP-GPU or vector processing unit (e.g.,
-ClearSpeed) where no (explicit) OS ran on those co-processors. 
+ClearSpeed\cite{10.1007/978-3-540-74384-2_19}) where no (explicit) OS
+runs on those co-processors.  
 
 The performance improvement of applications having dynamic
 workload is a big concern for the coming post-scale era. The
@@ -287,8 +310,7 @@ OS kernel thread of $B$ can switch to $A$ at user level by calling
 the {\tt swapcontext()} or {\tt setcontext()} Glibc function. This
 mechanism is very similar to the one of user-level thread. However,
 each PAVS process may have different program and do have privatized
-variables, unlike user-level thread. The time for the context
-switching of ULP is almost equal to the time of user-level thread. 
+variables, unlike user-level thread. 
 We named this {\em User-Level Process (ULP)}
 because PVAS processes behave like a process\cite{110009850784}.
 
@@ -330,16 +352,16 @@ I/O, a number of I/O requests are also sent to I/O servers. Our first
 idea is to throttle the number of request to the IO servers to get
 higher performance. There is another bottleneck in Two-Phase
 I/O. All-to-all like communication between user processes and
-aggregator processes to sort and merge the users' I/O requests takes
+aggregator processes to sort and merge the user's I/O requests takes
 place. If the I/O requests to the server are throttled, then this
-all-to-all-like communication can also be throttled. Consequently, the
+all-to-all like communication can also be throttled. Consequently, the
 communication bottleneck can be relaxed. Thus, the flow  
 of the I/O requests from user process to I/O servers can be done in a
 way of step-wise pipeline to level the loads of the communication
 network and I/O servers.
 
-The optimization method is named {\em EARTH} which includes the above
-step-wise communication, throttling to the I/O servers,
+This optimization technique was named {\em EARTH} which includes the
+above step-wise communication, throttling to the I/O servers,
 striping-aware data blocking and distribution, and 
 optimized allocation of the aggregator processes to decrease the message
 congestion in communication
@@ -348,9 +370,9 @@ Figure~\ref{fig:earth} shows the
 write bandwidth on the K computer\cite{k-computer} comparing the
 original MPI-IO and 
 EARTH optimized MPI-IO. In the EARTH cases, the number of requests at
-each step of the step-wise pipeline is also varied. As shown in this
-figure, EARTH performs more better when the number of processes
-increases. 
+each step of the step-wise pipeline is also varied (denited as
+``req=$N$). As shown in this figure, EARTH performs more better when
+the number of processes increases. 
 
 \begin{figure}[ht]
 \begin{center}
@@ -380,8 +402,8 @@ Since ULFM provides the way where user program can handle process
 failure events. It is up to the user program how to handle such
 situation. Having spare nodes to replace failed node is considered to
 be effective, however, study on the spare nodes is not active so far. We
-focused on this issue and propose how to allocate spare nodes and how
-failed nodes should be replace by the spare nodes. 
+also focused on this issue and propose how to allocate spare nodes and
+how failed nodes should be replace by the spare nodes. 
 
 \subsection{User-Level Fault Mitigation (ULFM)}
 
@@ -539,7 +561,7 @@ allocated, how to substitute them with faulty nodes, and how much the
 communication performance is affected by the substitution.
 The third question stems from the modification of the rank mapping by
 node substitutions, which can incur additional message collisions.
-In a stencil computation, rank mapping is done in a
+In a stencil computation, rank mapping can be done in a
 straightforward way on a Cartesian network without incurring any
 message collisions. However, once a substitution has occurred, such
 collision-free node-rank mapping can be
@@ -553,7 +575,8 @@ collisions should be as low as possible.
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=0.7\columnwidth]{Figs/Collisions.pdf}
-  \caption{Message Collisions on 5P 2D Stencil (X-Y routing)}
+  \caption{Message Collisions on 5P 2D Stencil on a Cartesian Network
+  (X-Y routing)} 
   \label{fig:message-collisions}
 \end{center}
 \end{figure}
@@ -567,7 +590,7 @@ simplicity.
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figs/SlidingSubstitution.pdf}
-  \caption{Sliding Methods on 2D Network}
+  \caption{0D, 1D and @d Sliding Methods on 2D Cartesian Network}
   \label{fig:sliding-methods}
 \end{center}
 \end{figure}
@@ -583,7 +606,12 @@ node and the spare node are shifted. In {\em 2D sliding} method, all
 nodes having the larger or equal to X-axis or Y-axis location are
 shifted. In general, the sliding method can be extended up to {\em
 $N$D sliding}, where $N$ is the dimension order of a Cartesian
-topology network. 
+topology network. When a substitution of a failed node happens, the
+inter-node communication of a stencil 
+computation takes place between the neighbor nodes of the spare node. 
+And the message collisions can happen on the paths between the
+neighbor nodes and the spare node.  This is the reason why the nerest
+spare node is chosen so that the paths can be minimized. 
 
 The highest order sliding method can be applied only the number of the
 order of the network, assuming spare nodes are allocated on every
@@ -624,18 +652,26 @@ many-core CPU, Knights Landing (KNL). Still, GP-GPUs are not
 standalone and require host CPU, however, most GP-GPUs are black-box
 from the viewpoint of OS and only little things can be done with
 them. Although MPVAS software developed in this project became
-useless, the idea of packing multiple processes running on
-heterogeneous CPUs into one virtual
+useless for the standalone many-core CPUs, the idea of packing
+multiple processes running on heterogeneous CPUs into one virtual
 address space is still effective.
 
 The PVAS project is still active. One of the most drawback of PVAS was
 the implementation by the patched Linux and PVAS was hard to port to the
 other OSes and architectures. To overcome this, a new
 user-level implementation has been being developed, named
-Process-in-Process (PiP). 
+Process-in-Process (PiP)\cite{hori:hpdc2018}. ULP on PVAS is also
+palnned to implement on top of PiP.
 The other techniques developed in this project excepting MPVAS are
 applicable for the exa-scale computing. The research on scalable
-MPI-IO, EARTH, is going on. The ULFM development team is
+MPI-IO, EARTH, is also going on. The ULFM development team is
 trying to push ULFM into the MPI standard.
 
 \section{Summary}
+
+We proposed PVAS as a new parallel execution model especially for
+many-core CPU, MPVAS for heterogeneous CPU architectures, ULP to have
+fast context switching between user-level proecsses, EARTH for
+efficient MPI Collective I/O, ULFM enhancement, and sliding
+substitution methods to replace failed nodes with spare nodes.
+Successor projects are contributing to the exa-scale computing.
